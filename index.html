@@ -158,17 +158,100 @@
             from { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
             to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
         }
+        /* 皮肤选择样式 */
+        .skins-section {
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease-in-out;
+            animation-delay: 0.3s;
+            animation-fill-mode: both;
+        }
+
+        .skins-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+            animation: bounceIn 1s ease-in-out;
+            animation-delay: 0.5s;
+            animation-fill-mode: both;
+        }
+
+        .skin-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            animation: fadeIn 1s ease-in-out;
+            animation-delay: 0.7s;
+            animation-fill-mode: both;
+        }
+
+        .skin-item {
+            width: 80px;
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .skin-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .skin-item.selected {
+            background: white;
+            box-shadow: 0 0 20px rgba(78, 205, 196, 0.6);
+            transform: scale(1.1);
+        }
+
+        .skin-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            margin: 0 auto 10px;
+        }
+
+
+        .skin-name {
+            font-size: 12px;
+            color: #333;
+            font-weight: bold;
+        }
 
         /* 响应式设计 */
         @media (max-width: 768px) {
             .title {
                 font-size: 36px;
-                margin-bottom: 40px;
+                margin-bottom: 30px;
+            }
+
+            .skins-title {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+
+            .skin-options {
+                gap: 15px;
+            }
+
+            .skin-item {
+                width: 70px;
+                padding: 8px;
+            }
+
+            .skin-preview {
+                width: 50px;
+                height: 50px;
             }
 
             .start-btn {
                 padding: 14px 28px;
                 font-size: 16px;
+                margin-top: 20px;
             }
 
             .game-info {
@@ -181,12 +264,42 @@
             }
         }
     </style>
+
 </head>
 <body>
     <div class="container">
         <!-- 首页 -->
         <div class="home-screen" id="homeScreen">
             <h1 class="title">🐍 可爱贪吃蛇</h1>
+            <div class="skins-section">
+                <h2 class="skins-title">选择皮肤</h2>
+                <div class="skin-options">
+                    <div class="skin-item selected" onclick="selectSkin(0)">
+                        <div class="skin-preview" style="background-color: #4ecdc4;"></div>
+                        <div class="skin-name">经典蓝</div>
+                    </div>
+                    <div class="skin-item" onclick="selectSkin(1)">
+                        <div class="skin-preview" style="background-color: #ff9a9e;"></div>
+                        <div class="skin-name">可爱粉</div>
+                    </div>
+                    <div class="skin-item" onclick="selectSkin(2)">
+                        <div class="skin-preview" style="background-color: #ff6b6b;"></div>
+                        <div class="skin-name">活力橙</div>
+                    </div>
+                    <div class="skin-item" onclick="selectSkin(3)">
+                        <div class="skin-preview" style="background-color: #96ceb4;"></div>
+                        <div class="skin-name">清新绿</div>
+                    </div>
+                    <div class="skin-item" onclick="selectSkin(4)">
+                        <div class="skin-preview" style="background-color: #45b7d1;"></div>
+                        <div class="skin-name">天空蓝</div>
+                    </div>
+                    <div class="skin-item" onclick="selectSkin(5)">
+                        <div class="skin-preview" style="background-color: #9b59b6;"></div>
+                        <div class="skin-name">优雅紫</div>
+                    </div>
+                </div>
+            </div>
             <button class="start-btn" onclick="startGame()">开始游戏</button>
         </div>
 
@@ -209,8 +322,8 @@
             direction: 'right',
             nextDirection: 'right',
             gridSize: 20,
-            rows: 25,
-            cols: 30,
+            rows: 30,
+            cols: 40,
             gameLoop: null,
             ctx: null,
             canvas: null,
@@ -220,7 +333,16 @@
             score: 0,
             isGameOver: false,
             touchStartX: 0,
-            touchStartY: 0
+            touchStartY: 0,
+            selectedSkin: 0,
+            skins: [
+                { id: 1, name: '经典蓝', color: '#4ecdc4' },
+                { id: 2, name: '可爱粉', color: '#ff9a9e' },
+                { id: 3, name: '活力橙', color: '#ff6b6b' },
+                { id: 4, name: '清新绿', color: '#96ceb4' },
+                { id: 5, name: '天空蓝', color: '#45b7d1' },
+                { id: 6, name: '优雅紫', color: '#9b59b6' }
+            ]
         };
 
         // 初始化游戏
@@ -235,7 +357,7 @@
             // 初始化蛇
             game.snake = [];
             for (let i = 3; i >= 0; i--) {
-                game.snake.push({ x: i + 5, y: 15 });
+                game.snake.push({ x: i + 10, y: 20 });
             }
 
             // 生成食物
@@ -388,6 +510,38 @@
             // 清空画布
             game.ctx.clearRect(0, 0, game.canvas.width, game.canvas.height);
 
+            // 绘制网格线（边界线）
+            game.ctx.strokeStyle = '#e0e0e0';
+            game.ctx.lineWidth = 1;
+            for (let x = 0; x <= game.cols; x++) {
+                const screenX = x * game.gridSize - game.cameraX;
+                if (screenX >= -game.gridSize && screenX <= game.canvas.width) {
+                    game.ctx.beginPath();
+                    game.ctx.moveTo(screenX, 0);
+                    game.ctx.lineTo(screenX, game.canvas.height);
+                    game.ctx.stroke();
+                }
+            }
+            for (let y = 0; y <= game.rows; y++) {
+                const screenY = y * game.gridSize - game.cameraY;
+                if (screenY >= -game.gridSize && screenY <= game.canvas.height) {
+                    game.ctx.beginPath();
+                    game.ctx.moveTo(0, screenY);
+                    game.ctx.lineTo(game.canvas.width, screenY);
+                    game.ctx.stroke();
+                }
+            }
+
+            // 绘制边界
+            game.ctx.strokeStyle = '#333';
+            game.ctx.lineWidth = 3;
+            game.ctx.strokeRect(
+                -game.cameraX,
+                -game.cameraY,
+                game.cols * game.gridSize,
+                game.rows * game.gridSize
+            );
+
             // 绘制蛇
             game.snake.forEach((segment, index) => {
                 const x = segment.x * game.gridSize - game.cameraX;
@@ -456,6 +610,22 @@
             
             // 添加键盘事件监听
             document.addEventListener('keydown', handleKeyDown);
+        }
+
+        // 选择皮肤
+        function selectSkin(index) {
+            game.selectedSkin = index;
+            game.snakeColor = game.skins[index].color;
+            
+            // 更新选中状态
+            const skinItems = document.querySelectorAll('.skin-item');
+            skinItems.forEach((item, i) => {
+                if (i === index) {
+                    item.classList.add('selected');
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
         }
 
         // 重新开始游戏
