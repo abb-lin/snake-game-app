@@ -532,14 +532,24 @@
                 }
             }
 
-            // 绘制边界
-            game.ctx.strokeStyle = '#333';
-            game.ctx.lineWidth = 3;
+            // 绘制边界（增强效果）
+            game.ctx.strokeStyle = '#ff6b6b';
+            game.ctx.lineWidth = 4;
             game.ctx.strokeRect(
                 -game.cameraX,
                 -game.cameraY,
                 game.cols * game.gridSize,
                 game.rows * game.gridSize
+            );
+            
+            // 绘制内边界
+            game.ctx.strokeStyle = '#ff9a9e';
+            game.ctx.lineWidth = 2;
+            game.ctx.strokeRect(
+                -game.cameraX + 2,
+                -game.cameraY + 2,
+                game.cols * game.gridSize - 4,
+                game.rows * game.gridSize - 4
             );
 
             // 绘制蛇
